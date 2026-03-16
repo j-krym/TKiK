@@ -77,9 +77,12 @@ class Token:
     def __init__(self, cd, val):
         self.code = cd
         self.value = val
-        
+    def __str__(self):
+        if self.code in (Symbol.INT,Symbol.ID):
+            return self.code.__str__() + " " + str(self.value)
+        return self.code.__str__()
 
-skaner = Scanner("2+3*(76+8/3)+ 3*(9-3) ")
+skaner = Scanner("2+3*(76+8/3)+ 3*(9-3) alfa ")
 tokeny = skaner.scan()
 for t in tokeny:
-    print(t.code, " ", t.value)
+    print(t)
