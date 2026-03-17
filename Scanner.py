@@ -83,8 +83,9 @@ class Scanner:
                 self.iterator += 1
             value = self.text[start:self.iterator]
             return Token(Symbol.ID, value)
-        
-        raise ValueError(f"Invalid character: '{current_character}' at position {self.iterator}")
+
+        if not(current_character.isalnum() or current_character.isdigit()):
+            raise ValueError(f"Invalid character: '{current_character}' at position {self.iterator}")
             
 
 skaner = Scanner("2+3*(76+8/3)+ 3*(9-3) alfa ")
