@@ -14,63 +14,6 @@ class Symbol(Enum):
     MUL = 6
     DIV = 7
 
-class Scanner:
-    def __init__(self, text):
-        self.tokens = list()
-        self.text : str = text.strip()
-        self.iterator = 0
-        self.current_token: str = ""
-
-    def scan(self):
-        while len(self.text) > self.iterator:
-            self.tokens.append(self.get_next_token())
-            self.iterator += 1
-        return self.tokens
-
-
-    def get_next_token(self) -> Token:
-        current_character = self.text[self.iterator]
-        while current_character in " \n":
-            self.iterator+=1
-            current_character = self.text[self.iterator]
-        match current_character:
-            case "+":
-                return Token(Symbol.ADD,"+")
-            case "-":
-                return Token(Symbol.SUB,"-")
-            case "*":
-                return Token(Symbol.MUL,"*")
-            case "/":
-                return Token(Symbol.DIV,"/")
-            case "(":
-                return Token(Symbol.LPAR,"(")
-            case ")":
-                return Token(Symbol.RPAR,")")
-        if current_character.isdigit():
-            self.current_token = "" + current_character
-            self.iterator +=1
-            while len(self.text) > self.iterator:
-                current_character = self.text[self.iterator]
-                if current_character.isdigit():
-                    self.current_token += current_character
-                    self.iterator += 1
-                else:
-                    break
-            self.iterator -= 1
-            return Token(Symbol.INT, int(self.current_token))
-        if current_character.isalpha():
-            self.current_token = "" + current_character
-            self.iterator +=1
-            while len(self.text) > self.iterator:
-                current_character = self.text[self.iterator]
-                if current_character.isalnum():
-                    self.current_token += current_character
-                    self.iterator += 1
-                else:
-                    break
-            self.iterator -= 1
-            return Token(Symbol.ID, self.current_token)
-            
 
 class Token:
     code : Symbol
@@ -81,6 +24,68 @@ class Token:
         if self.code in (Symbol.INT,Symbol.ID):
             return self.code.__str__() + " " + str(self.value)
         return self.code.__str__()
+    
+class Scanner:
+    def __init__(self, text):
+        self.tokens = list()
+        self.text : str = text.strip()
+        self.iterator = 0
+        self.current_token: str = ""
+
+    def scan(self):
+        self.tokens = []
+        while True:
+            token = self.get_next_token()
+            if token is None:
+                break
+            self.tokens.append(token)
+        return self.tokens
+
+    def get_next_token(self) -> Token:
+        while self.iterator < len(self.text) and self.text[self.iterator] in " \n":
+            self.iterator += 1
+        
+        if self.iterator >= len(self.text):
+            return None
+        
+        current_character = self.text[self.iterator]
+        
+        match current_character:
+            case "+":
+                self.iterator += 1
+                return Token(Symbol.ADD, "+")
+            case "-":
+                self.iterator += 1
+                return Token(Symbol.SUB, "-")
+            case "*":
+                self.iterator += 1
+                return Token(Symbol.MUL, "*")
+            case "/":
+                self.iterator += 1
+                return Token(Symbol.DIV, "/")
+            case "(":
+                self.iterator += 1
+                return Token(Symbol.LPAR, "(")
+            case ")":
+                self.iterator += 1
+                return Token(Symbol.RPAR, ")")
+        
+        if current_character.isdigit():
+            start = self.iterator
+            while self.iterator < len(self.text) and self.text[self.iterator].isdigit():
+                self.iterator += 1
+            value = int(self.text[start:self.iterator])
+            return Token(Symbol.INT, value)
+        
+        if current_character.isalpha():
+            start = self.iterator
+            while self.iterator < len(self.text) and self.text[self.iterator].isalnum():
+                self.iterator += 1
+            value = self.text[start:self.iterator]
+            return Token(Symbol.ID, value)
+        
+        raise ValueError(f"Invalid character: '{current_character}' at position {self.iterator}")
+            
 
 skaner = Scanner("2+3*(76+8/3)+ 3*(9-3) alfa ")
 tokeny = skaner.scan()
