@@ -24,26 +24,32 @@ class Symbol(Enum):
 keywords = ["if","else","break","while","for","return","false","true","int","float",
             "char","string","bool","void"]
 colors = {
-    Symbol.KEYWORD: "#0000FF",   # mocny niebieski (słowa kluczowe)
-    Symbol.ID: "#001080",        # ciemny niebieski (identyfikatory)
-    Symbol.INT: "#098658",       # zielony (liczby)
+    Symbol.KEYWORD: "#AF00DB",   # fiolet (czytelny, ale nie agresywny)
+    Symbol.ID: "#001080",        # ciemny granat zamiast czerni
+    Symbol.INT: "#098658",       # zielony
 
-    Symbol.ADD: "#000000",
-    Symbol.SUB: "#000000",
-    Symbol.MUL: "#000000",
-    Symbol.DIV: "#000000",
-    Symbol.ASSIGN: "#000000",
-    Symbol.EQ: "#000000",
-    Symbol.LTHAN: "#000000",
-    Symbol.GTHAN: "#000000",
-    Symbol.INCREM: "#000000",
-    Symbol.DECREM: "#000000",
+    # operatory – ciemnoszare zamiast czarnych
+    Symbol.ADD: "#333333",
+    Symbol.SUB: "#333333",
+    Symbol.MUL: "#333333",
+    Symbol.DIV: "#333333",
+    Symbol.ASSIGN: "#333333",
+    Symbol.EQ: "#333333",
+    Symbol.LTHAN: "#333333",
+    Symbol.GTHAN: "#333333",
 
-    Symbol.LPAR: "#000000",
-    Symbol.RPAR: "#000000",
-    Symbol.LBRACE: "#000000",
-    Symbol.RBRACE: "#000000",
-    Symbol.SEMICOLON: "#000000",
+    # inkrementacja – lekko wyróżniona
+    Symbol.INCREM: "#333333",
+    Symbol.DECREM: "#333333",
+
+    # nawiasy – inny odcień, żeby łatwo śledzić strukturę
+    Symbol.LPAR: "#795E26",      
+    Symbol.RPAR: "#795E26",
+    Symbol.LBRACE: "#B26700",
+    Symbol.RBRACE: "#B26700",
+
+    # separator – najlżejszy
+    Symbol.SEMICOLON: "#999999",
 }
 
 class Token:
