@@ -23,7 +23,28 @@ class Symbol(Enum):
     KEYWORD=19
 keywords = ["if","else","break","while","for","return","false","true","int","float",
             "char","string","bool","void"]
-colors ={Symbol.ID: "Blue",Symbol.INT:"DarkGreen",Symbol.LPAR:"Purple",Symbol.RPAR:"Purple" }
+colors = {
+    Symbol.KEYWORD: "#0000FF",   # mocny niebieski (słowa kluczowe)
+    Symbol.ID: "#001080",        # ciemny niebieski (identyfikatory)
+    Symbol.INT: "#098658",       # zielony (liczby)
+
+    Symbol.ADD: "#000000",
+    Symbol.SUB: "#000000",
+    Symbol.MUL: "#000000",
+    Symbol.DIV: "#000000",
+    Symbol.ASSIGN: "#000000",
+    Symbol.EQ: "#000000",
+    Symbol.LTHAN: "#000000",
+    Symbol.GTHAN: "#000000",
+    Symbol.INCREM: "#000000",
+    Symbol.DECREM: "#000000",
+
+    Symbol.LPAR: "#000000",
+    Symbol.RPAR: "#000000",
+    Symbol.LBRACE: "#000000",
+    Symbol.RBRACE: "#000000",
+    Symbol.SEMICOLON: "#000000",
+}
 
 class Token:
     code : Symbol
