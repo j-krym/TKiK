@@ -18,4 +18,4 @@ Kod źródłowy w Pythonie wygenerowany na podstawie wejściowego programu w C.
 Python
 
 **Sposób realizacji skanera/parsera:**  
-Wykorzystanie generatora parserów ANTLR – użycie istniejącej gramatyki języka C oraz generacja parsera w języku Python.
+Wykorzystanie generatora parserów ANTLR
