@@ -18,7 +18,7 @@ Kod źródłowy w Pythonie wygenerowany na podstawie wejściowego programu w C.
 Python
 
 **Sposób realizacji skanera/parsera:**  
-Wykorzystanie generatora parserów ANTLR
+Wykorzystanie generatora parserów LARK
 
 ## Opis tokenów
 
@@ -57,13 +57,13 @@ Wykorzystanie generatora parserów ANTLR
 | MUL_ASSIGN | `*=` | Multiplication assignment operator. |
 | DIV_ASSIGN | `/=` | Division assignment operator. |
 | QUESTION | `?` | Ternary conditional operator (first part). |
-| COLON | `:` | Ternary conditional operator (second part) or statement separator. |
+| COLON | `:` | Ternary conditional operator (second part). |
 | LPAREN | `(` | Left parenthesis - syntactic delimiter. |
 | RPAREN | `)` | Right parenthesis - syntactic delimiter. |
 | LBRACE | `{` | Left brace - block delimiter. |
 | RBRACE | `}` | Right brace - block delimiter. |
-| LBRACKET | `[` | Left square bracket - array index delimiter. |
-| RBRACKET | `]` | Right square bracket - array index delimiter. |
+| LBRACKET | `[` | Left square bracket. |
+| RBRACKET | `]` | Right square bracket. |
 | COMMA | `,` | Parameter/argument separator. |
 | SEMICOLON | `;` | Statement terminator. |
 | CPP_COMMENT | `//[^\n]*` | C++-style single-line comment (ignored). |
