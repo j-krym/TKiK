@@ -36,26 +36,17 @@ Wykorzystanie generatora parserów LARK
 | BOOLEAN | `true` \| `false` | Boolean literals. |
 | IDENT | `[a-zA-Z_][a-zA-Z0-9_]*` | User-defined identifiers for variables, functions, and parameters. |
 | NUMBER | `[0-9]+(?:\.[0-9]+)?` | Numeric literals (integers and floating-point numbers). |
-| STRING | `"(?:[^"\\]|\\.)*"` | String literals enclosed in double quotes. |
+| STRING | `"(?:[^"\\]\|\\.)*"` | String literals enclosed in double quotes. |
 | PLUS | `+` | Arithmetic addition operator or unary plus. |
 | MINUS | `-` | Arithmetic subtraction operator or unary negation. |
 | MUL | `*` | Arithmetic multiplication operator. |
 | DIV | `/` | Arithmetic division operator. |
 | MOD | `%` | Modulo (remainder) operator. |
-| EQ | `==` | Relational equality operator. |
-| NE | `!=` | Relational inequality operator. |
-| LT | `<` | Relational less-than operator. |
-| GT | `>` | Relational greater-than operator. |
-| LE | `<=` | Relational less-than-or-equal operator. |
-| GE | `>=` | Relational greater-than-or-equal operator. |
+| COMP_OP | `==` `!=` `<` `>` `<=` `>=` | Comparison operators. |
 | AND | `&&` | Logical conjunction (AND) operator. |
 | OR | `\|\|` | Logical disjunction (OR) operator. |
 | NOT | `!` | Logical negation (NOT) operator. |
-| ASSIGN | `=` | Assignment operator. |
-| PLUS_ASSIGN | `+=` | Addition assignment operator. |
-| MINUS_ASSIGN | `-=` | Subtraction assignment operator. |
-| MUL_ASSIGN | `*=` | Multiplication assignment operator. |
-| DIV_ASSIGN | `/=` | Division assignment operator. |
+| ASSIGN_OP | `=` `+=` `-=` `*=` `/=` | Assignment operators. |
 | QUESTION | `?` | Ternary conditional operator (first part). |
 | COLON | `:` | Ternary conditional operator (second part). |
 | LPAREN | `(` | Left parenthesis - syntactic delimiter. |
