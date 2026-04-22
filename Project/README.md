@@ -22,44 +22,50 @@ Wykorzystanie generatora parserów LARK
 
 ## Opis tokenów
 
-| Token Name | Pattern / Value | Description |
-|-----------|-----------------|-------------|
-| INT_TYPE | `int` | Integer data type keyword. |
-| FLOAT_TYPE | `float` | Floating-point data type keyword. |
-| IF | `if` | Initiates a conditional statement block. |
-| ELSE | `else` | Defines the alternative branch of a conditional statement. |
-| WHILE | `while` | Keyword for while loop. |
-| FOR | `for` | Keyword for for loop. |
-| RETURN | `return` | Function return statement keyword. |
-| BREAK | `break` | Loop break statement keyword. |
-| CONTINUE | `continue` | Loop continue statement keyword. |
-| BOOLEAN | `true` \| `false` | Boolean literals. |
-| IDENT | `[a-zA-Z_][a-zA-Z0-9_]*` | User-defined identifiers for variables, functions, and parameters. |
-| NUMBER | `[0-9]+(?:\.[0-9]+)?` | Numeric literals (integers and floating-point numbers). |
-| STRING | `"(?:[^"\\]\|\\.)*"` | String literals enclosed in double quotes. |
-| PLUS | `+` | Arithmetic addition operator or unary plus. |
-| MINUS | `-` | Arithmetic subtraction operator or unary negation. |
-| MUL | `*` | Arithmetic multiplication operator. |
-| DIV | `/` | Arithmetic division operator. |
-| MOD | `%` | Modulo (remainder) operator. |
-| COMP_OP | `==` `!=` `<` `>` `<=` `>=` | Comparison operators. |
-| AND | `&&` | Logical conjunction (AND) operator. |
-| OR | `\|\|` | Logical disjunction (OR) operator. |
-| NOT | `!` | Logical negation (NOT) operator. |
-| ASSIGN_OP | `=` `+=` `-=` `*=` `/=` | Assignment operators. |
-| QUESTION | `?` | Ternary conditional operator (first part). |
-| COLON | `:` | Ternary conditional operator (second part). |
-| LPAREN | `(` | Left parenthesis - syntactic delimiter. |
-| RPAREN | `)` | Right parenthesis - syntactic delimiter. |
-| LBRACE | `{` | Left brace - block delimiter. |
-| RBRACE | `}` | Right brace - block delimiter. |
-| LBRACKET | `[` | Left square bracket. |
-| RBRACKET | `]` | Right square bracket. |
-| COMMA | `,` | Parameter/argument separator. |
-| SEMICOLON | `;` | Statement terminator. |
-| CPP_COMMENT | `//[^\n]*` | C++-style single-line comment (ignored). |
-| C_COMMENT | `/\*[\s\S]*?\*/` | C-style multi-line comment (ignored). |
-| WS | `[ \t\f\r\n]+` | Whitespace characters (ignored). |
+| Token Name  | Pattern / Value             | Description                                                        |
+| ----------- | --------------------------- | ------------------------------------------------------------------ |
+| INT_TYPE    | `int`                       | Integer data type keyword.                                         |
+| FLOAT_TYPE  | `float`                     | Floating-point data type keyword.                                  |
+| IF          | `if`                        | Initiates a conditional statement block.                           |
+| ELSE        | `else`                      | Defines the alternative branch of a conditional statement.         |
+| WHILE       | `while`                     | Keyword for while loop.                                            |
+| FOR         | `for`                       | Keyword for for loop.                                              |
+| SWITCH      | `switch`                    | Switch-case control flow keyword.                                  |
+| CASE        | `case`                      | Defines a branch in a switch statement.                            |
+| DEFAULT     | `default`                   | Default branch in a switch statement.                              |
+| RETURN      | `return`                    | Function return statement keyword.                                 |
+| BREAK       | `break`                     | Loop or switch break statement keyword.                            |
+| CONTINUE    | `continue`                  | Loop continue statement keyword.                                   |
+| BOOLEAN     | `true` \| `false`            | Boolean literals.                                                  |
+| IDENT       | `[a-zA-Z_][a-zA-Z0-9_]*`    | User-defined identifiers for variables, functions, and parameters. |
+| NUMBER      | `[0-9]+(?:\.[0-9]+)?`       | Numeric literals (integers and floating-point numbers).            |
+| STRING      | `"(?:[^"\\]\|\\.)*"`        | String literals with escape sequence support.                      |
+| PLUS        | `+`                         | Arithmetic addition operator or unary plus.                        |
+| MINUS       | `-`                         | Arithmetic subtraction operator or unary negation.                 |
+| MUL         | `*`                         | Arithmetic multiplication operator.                                |
+| DIV         | `/`                         | Arithmetic division operator.                                      |
+| MOD         | `%`                         | Modulo (remainder) operator.                                       |
+| INC         | `++`                        | Increment operator (prefix or postfix).                            |
+| DEC         | `--`                        | Decrement operator (prefix or postfix).                            |
+| COMP_OP     | `==` `!=` `<` `>` `<=` `>=` | Comparison operators.                                              |
+| AND         | `&&`                        | Logical conjunction (AND) operator.                                |
+| OR          | `\|\|`                      | Logical disjunction (OR) operator.                                 |
+| NOT         | `!`                         | Logical negation (NOT) operator.                                   |
+| ASSIGN_OP   | `=` `+=` `-=` `*=` `/=`     | Assignment operators.                                              |
+| QUESTION    | `?`                         | Ternary conditional operator (first part).                         |
+| COLON       | `:`                         | Used in ternary operator and switch-case labels.                   |
+| LPAREN      | `(`                         | Left parenthesis - grouping and function calls.                    |
+| RPAREN      | `)`                         | Right parenthesis - grouping and function calls.                   |
+| LBRACE      | `{`                         | Left brace - block delimiter.                                      |
+| RBRACE      | `}`                         | Right brace - block delimiter.                                     |
+| LBRACKET    | `[`                         | Left square bracket - array indexing.                              |
+| RBRACKET    | `]`                         | Right square bracket - array indexing.                             |
+| COMMA       | `,`                         | Parameter and argument separator.                                  |
+| SEMICOLON   | `;`                         | Statement terminator.                                              |
+| CPP_COMMENT | `//[^\n]*`                  | Single-line comment (preserved in AST).                            |
+| C_COMMENT   | `/\*[\s\S]*?\*/`            | Multi-line comment (preserved in AST).                             |
+| WS          | `[ \t\f\r\n]+`              | Whitespace characters (ignored by lexer).                          |
+
 
 ## Gramatyka
 
