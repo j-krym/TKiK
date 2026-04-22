@@ -70,6 +70,7 @@ Wykorzystanie generatora parserów LARK
 
     ?item: function_def
          | declaration ";"
+         | comment
 
     function_def: type_spec IDENT "(" param_list? ")" block
 
@@ -80,6 +81,7 @@ Wykorzystanie generatora parserów LARK
 
     ?statement: declaration ";"
               | assignment ";"
+              | inc_dec_stmt ";"
               | if_stmt
               | while_stmt
               | for_stmt
@@ -89,6 +91,7 @@ Wykorzystanie generatora parserów LARK
               | "continue" ";"   -> continue_stmt
               | block
               | ";"
+              | comment
 
     if_stmt: "if" "(" expr ")" statement elif_clause* else_clause?
     elif_clause: "else" "if" "(" expr ")" statement
@@ -97,16 +100,25 @@ Wykorzystanie generatora parserów LARK
     while_stmt: "while" "(" expr ")" statement
     
     for_stmt: "for" "(" for_init? ";" expr? ";" for_post? ")" statement
-    for_init: declaration_nosemi
+    for_init: declaration
             | assignment
             | expr
     for_post: assignment
+            | inc_dec_stmt
             | expr
+
+    inc_dec_stmt: IDENT INC    -> post_inc_stmt
+            | IDENT DEC    -> post_dec_stmt
+            | INC IDENT    -> pre_inc_stmt
+            | DEC IDENT    -> pre_dec_stmt
+
+    switch_stmt: "switch" "(" expr ")" "{" case_block* default_block? "}"
+    case_block: "case" expr ":" statement* "break" ";"
+    default_block: "default" ":" statement*
 
     declaration: type_spec decl ("," decl)*
     decl: IDENT ("=" expr)?
 
-    declaration_nosemi: type_spec IDENT ("=" expr)?
 
     assignment: lvalue ASSIGN_OP expr
     ?lvalue: IDENT           -> var_ref
@@ -133,6 +145,9 @@ Wykorzystanie generatora parserów LARK
     DIV: "/"
     MOD: "%"
 
+    INC: "++"
+    DEC: "--"
+    
     ?sum: term ((PLUS | MINUS) term)*
     ?term: factor ((MUL | DIV | MOD) factor)*
 
@@ -165,11 +180,11 @@ Wykorzystanie generatora parserów LARK
     IDENT: /[a-zA-Z_][a-zA-Z0-9_]*/
     NUMBER: /[0-9]+(?:\.[0-9]+)?/
     STRING: /"(?:[^"\\]|\\.)*"/
+    
+    comment: CPP_COMMENT | C_COMMENT
 
     CPP_COMMENT: /\/\/[^\n]*/
     C_COMMENT: /\/\*[\s\S]*?\*\//
-
+    
     %import common.WS
     %ignore WS
-    %ignore CPP_COMMENT
-    %ignore C_COMMENT
