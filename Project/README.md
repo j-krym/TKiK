@@ -1,3 +1,4 @@
+
 ### Translator języka C do Python
 
 - Jacek Krymer jkrymer@student.agh.edu.pl
@@ -26,6 +27,7 @@ Wykorzystanie generatora parserów LARK
 | ----------- | --------------------------- | ------------------------------------------------------------------ |
 | INT_TYPE    | `int`                       | Integer data type keyword.                                         |
 | FLOAT_TYPE  | `float`                     | Floating-point data type keyword.                                  |
+| STRUCT      | `struct`                    | Keyword for struct type
 | IF          | `if`                        | Initiates a conditional statement block.                           |
 | ELSE        | `else`                      | Defines the alternative branch of a conditional statement.         |
 | WHILE       | `while`                     | Keyword for while loop.                                            |
@@ -54,6 +56,7 @@ Wykorzystanie generatora parserów LARK
 | ASSIGN_OP   | `=` `+=` `-=` `*=` `/=`     | Assignment operators.                                              |
 | QUESTION    | `?`                         | Ternary conditional operator (first part).                         |
 | COLON       | `:`                         | Used in ternary operator and switch-case labels.                   |
+| DOT         | `.`                         | Struct member access
 | LPAREN      | `(`                         | Left parenthesis - grouping and function calls.                    |
 | RPAREN      | `)`                         | Right parenthesis - grouping and function calls.                   |
 | LBRACE      | `{`                         | Left brace - block delimiter.                                      |
@@ -70,127 +73,136 @@ Wykorzystanie generatora parserów LARK
 ## Gramatyka
 
 
-    ?start: program
+        ?start: program
 
-    program: item*
+        program: item*
 
-    ?item: function_def
-         | declaration ";"
-         | comment
+        ?item: function_def
+        | struct_def
+        | declaration ";"
+        | comment
 
-    function_def: type_spec IDENT "(" param_list? ")" block
+        struct_def: "struct" IDENT "{" struct_field* "}"
+        struct_field: type_spec IDENT ";"
 
-    param_list: param ("," param)*
-    param: type_spec IDENT
+        function_def: type_spec IDENT "(" param_list? ")" block
 
-    block: "{" statement* "}"
+        param_list: param ("," param)*
+        param: type_spec IDENT
 
-    ?statement: declaration ";"
-              | assignment ";"
-              | inc_dec_stmt ";"
-              | if_stmt
-              | while_stmt
-              | for_stmt
-              | return_stmt ";"
-              | expr_stmt ";"
-              | "break" ";"      -> break_stmt
-              | "continue" ";"   -> continue_stmt
-              | block
-              | ";"
-              | comment
+        block: "{" statement* "}"
 
-    if_stmt: "if" "(" expr ")" statement elif_clause* else_clause?
-    elif_clause: "else" "if" "(" expr ")" statement
-    else_clause: "else" statement
-    
-    while_stmt: "while" "(" expr ")" statement
-    
-    for_stmt: "for" "(" for_init? ";" expr? ";" for_post? ")" statement
-    for_init: declaration
-            | assignment
-            | expr
-    for_post: assignment
-            | inc_dec_stmt
-            | expr
+        ?statement: declaration ";"
+                | assignment ";"
+                | inc_dec_stmt ";"
+                | if_stmt
+                | while_stmt
+                | for_stmt
+                | switch_stmt
+                | return_stmt ";"
+                | expr_stmt ";"
+                | "break" ";"      -> break_stmt
+                | "continue" ";"   -> continue_stmt
+                | block
+                | ";"
+                | comment
 
-    inc_dec_stmt: IDENT INC    -> post_inc_stmt
-            | IDENT DEC    -> post_dec_stmt
-            | INC IDENT    -> pre_inc_stmt
-            | DEC IDENT    -> pre_dec_stmt
+        if_stmt:     "if" "(" condition ")" statement elif_clause* else_clause?
+        elif_clause: "else" "if" "(" condition ")" statement
+        else_clause: "else" statement
 
-    switch_stmt: "switch" "(" expr ")" "{" case_block* default_block? "}"
-    case_block: "case" expr ":" statement* "break" ";"
-    default_block: "default" ":" statement*
+        while_stmt: "while" "(" condition ")" statement
 
-    declaration: type_spec decl ("," decl)*
-    decl: IDENT ("=" expr)?
+        for_stmt: "for" "(" for_init? ";" condition? ";" for_post? ")" statement
+        for_init: declaration
+                | assignment
+                | expr
+        for_post: assignment
+                | inc_dec_stmt
+                | expr
 
+        inc_dec_stmt: IDENT INC -> post_inc_stmt
+                | IDENT DEC -> post_dec_stmt
+                | INC IDENT -> pre_inc_stmt
+                | DEC IDENT -> pre_dec_stmt
 
-    assignment: lvalue ASSIGN_OP expr
-    ?lvalue: IDENT           -> var_ref
-           | index_access    -> index_ref
-    ASSIGN_OP: "=" | "+=" | "-=" | "*=" | "/="
+        switch_stmt: "switch" "(" expr ")" "{" case_block* default_block? "}"
+        case_block: "case" expr ":" statement* "break" ";"
+        default_block: "default" ":" statement*
 
+        declaration: type_spec decl ("," decl)*
+        decl: IDENT ("=" expr)?
 
-    return_stmt: "return" expr?
-    expr_stmt: expr
+        assignment: lvalue ASSIGN_OP expr
+        ?lvalue: IDENT          -> var_ref
+        | index_access   -> index_ref
+        | member_access  -> member_ref
+        ASSIGN_OP: "=" | "+=" | "-=" | "*=" | "/="
 
-    ?expr: ternary
+        return_stmt: "return" expr?
+        expr_stmt: expr
 
-    ?ternary: logic_or ("?" expr ":" expr)?
+        ?condition: expr
 
-    ?logic_or: logic_and ("||" logic_and)*
-    ?logic_and: comparison ("&&" comparison)*
+        ?expr: ternary
 
-    ?comparison: sum (COMP_OP sum)?
-    COMP_OP: "==" | "!=" | "<=" | ">=" | "<" | ">"
+        ?ternary: logic_or ("?" ternary ":" ternary)?
 
-    PLUS: "+"
-    MINUS: "-"
-    MUL: "*"
-    DIV: "/"
-    MOD: "%"
+        ?logic_or:  logic_and ("||" logic_and)*
+        ?logic_and: comparison ("&&" comparison)*
 
-    INC: "++"
-    DEC: "--"
-    
-    ?sum: term ((PLUS | MINUS) term)*
-    ?term: factor ((MUL | DIV | MOD) factor)*
+        ?comparison: sum (COMP_OP sum)?
+        COMP_OP: "==" | "!=" | "<=" | ">=" | "<" | ">"
 
-    ?factor: "!" factor      -> log_not
-           | call
-           | index_access
-           | atom
+        PLUS: "+"
+        MINUS: "-"
+        MUL: "*"
+        DIV: "/"
+        MOD: "%"
 
-    index_access: (IDENT | call) ("[" expr "]")*
+        INC: "++"
+        DEC: "--"
 
-    ?atom: NUMBER   -> number
-         | STRING   -> string
-         | IDENT    -> var
-         | BOOLEAN  -> bool
-         | list_literal
-         | "(" expr ")"
-         | MINUS factor -> neg
-         | PLUS factor  -> pos
+        ?sum:  term ((PLUS | MINUS) term)*
+        ?term: factor ((MUL | DIV | MOD) factor)*
 
-    list_literal: "[" (expr ("," expr)*)? "]"
+        ?factor: "!" factor      -> log_not
+        | call
+        | member_access
+        | index_access
+        | atom
 
-    call: IDENT "(" arg_list? ")"
-    arg_list: expr ("," expr)*
-    
-    ?type_spec: (INT_TYPE | FLOAT_TYPE) ("[" "]")*
-    INT_TYPE: "int"
-    FLOAT_TYPE: "float"
-    
-    BOOLEAN: "true" | "false"
-    IDENT: /[a-zA-Z_][a-zA-Z0-9_]*/
-    NUMBER: /[0-9]+(?:\.[0-9]+)?/
-    STRING: /"(?:[^"\\]|\\.)*"/
-    
-    comment: CPP_COMMENT | C_COMMENT
+        member_access: (IDENT | call | index_access) ("." IDENT)+
 
-    CPP_COMMENT: /\/\/[^\n]*/
-    C_COMMENT: /\/\*[\s\S]*?\*\//
-    
-    %import common.WS
-    %ignore WS
+        index_access: (IDENT | call) ("[" expr "]")*
+
+        ?atom: NUMBER       -> number
+        | STRING       -> string
+        | IDENT        -> var
+        | BOOLEAN      -> bool
+        | list_literal
+        | "(" expr ")"
+        | MINUS factor -> neg
+        | PLUS factor  -> pos
+
+        list_literal: "[" (expr ("," expr)*)? "]"
+
+        call: IDENT "(" arg_list? ")"
+        arg_list: expr ("," expr)*
+
+        ?type_spec: (INT_TYPE | FLOAT_TYPE | struct_type) ("[" "]")*
+        INT_TYPE:   "int"
+        FLOAT_TYPE: "float"
+        struct_type: "struct" IDENT
+
+        BOOLEAN: "true" | "false"
+        IDENT:   /[a-zA-Z_][a-zA-Z0-9_]*/
+        NUMBER:  /[0-9]+(?:\.[0-9]+)?/
+        STRING:  /"(?:[^"\\]|\\.)*"/
+
+        comment: CPP_COMMENT | C_COMMENT
+        CPP_COMMENT: /\/\/[^\n]*/
+        C_COMMENT:   /\/\*[\s\S]*?\*\//
+
+        %import common.WS
+        %ignore WS
