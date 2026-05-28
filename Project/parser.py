@@ -115,7 +115,8 @@ GRAMMAR = r"""
           | "[" expr "]"     -> index_suffix
 
     ?primary: call
-            | NUMBER       -> number
+            | FLOAT_NUMBER -> float_number
+            | INT_NUMBER   -> int_number
             | STRING       -> string
             | IDENT        -> var
             | BOOLEAN      -> bool
@@ -137,7 +138,8 @@ GRAMMAR = r"""
 
     BOOLEAN: "true" | "false"
     IDENT:   /[a-zA-Z_][a-zA-Z0-9_]*/
-    NUMBER:  /[0-9]+(?:\.[0-9]+)?/
+    FLOAT_NUMBER: /[0-9]+\.[0-9]+/
+    INT_NUMBER:   /[0-9]+/
     STRING:  /"(?:[^"\\]|\\.)*"/
 
     comment: CPP_COMMENT | C_COMMENT
