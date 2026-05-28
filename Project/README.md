@@ -42,7 +42,8 @@ Wykorzystanie generatora parserów LARK
 | `INCLUDE`     | `#include`                  | Preprocessor include directive.            |
 | `BOOLEAN`     | `true` | `false`            | Boolean literals.                          |
 | `IDENT`       | `[a-zA-Z_][a-zA-Z0-9_]*`    | Identifier names.                          |
-| `NUMBER`      | `[0-9]+(?:\.[0-9]+)?`       | Integer or floating-point numeric literal. |
+| `INT_NUMBER`   | `[0-9]+`                   | Integer numeric literal.                   |
+| `FLOAT_NUMBER` | `[0-9]+\.[0-9]+`           | Floating-point numeric literal.            |
 | `STRING`      | `"(?:[^"\\\\]\|\\\\.)*"`    | String literal with escape support.        |
 | `HEADER`      | `<[^>]+>`                   | Header file include path.                  |
 | `PLUS`        | `+`                         | Addition operator or unary plus.           |
