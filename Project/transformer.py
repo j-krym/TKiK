@@ -298,11 +298,11 @@ class CToASTTransformer(Transformer):
     def pos(self, children):
         return children[0]
 
-    def number(self, children):
-        text = str(children[0])
-        if "." in text:
-            return Number(value=float(text))
-        return Number(value=int(text))
+    def int_number(self, children):
+        return Number(value=int(str(children[0])))
+
+    def float_number(self, children):
+        return Number(value=float(str(children[0])))
 
     def string(self, children):
         token = str(children[0])
@@ -337,9 +337,11 @@ class CToASTTransformer(Transformer):
     def IDENT(self, token):
         return str(token)
 
-    def NUMBER(self, token):
+    def INT_NUMBER(self, token):
         return str(token)
 
+def FLOAT_NUMBER(self, token):
+    return str(token)
     def STRING(self, token):
         return str(token)
 
