@@ -1,28 +1,45 @@
-from __future__ import annotations
-
 import sys
-from pathlib import Path
 
-from codegen import CodeGenerator
 from parser import CParser
+from transformer import ASTTransformer
+from codegen import CodeGenerator
+from semantic import SemanticAnalyzer, SemanticError
 
 
-def translate(input_path: str, output_path: str) -> None:
-    source = Path(input_path).read_text(encoding="utf-8")
+def translate(input_path: str, output_path: str):
+    with open(input_path, "r", encoding="utf-8") as f:
+        source = f.read()
+
     parser = CParser()
-    program = parser.parse(source)
+    tree = parser.parse(source)
+
+    transformer = ASTTransformer()
+    program = transformer.transform(tree)
+
+    SemanticAnalyzer().analyze(program)
+
     generator = CodeGenerator()
-    output = generator.generate(program)
-    Path(output_path).write_text(output, encoding="utf-8")
+    python_code = generator.generate(program)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(python_code)
 
 
-def main(argv: list[str] | None = None) -> int:
-    argv = sys.argv[1:] if argv is None else argv
-    if len(argv) != 2:
-        print("Usage: python main.py input.c output.py", file=sys.stderr)
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python main.py <input.c> <output.py>")
         return 1
-    input_path, output_path = argv
-    translate(input_path, output_path)
+
+    input_path = sys.argv[1]
+    output_path = sys.argv[2]
+
+    try:
+        translate(input_path, output_path)
+
+    except (SyntaxError, SemanticError) as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
     return 0
 
 
