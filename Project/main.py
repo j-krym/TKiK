@@ -16,6 +16,7 @@ def translate(input_path: str, output_path: str):
     transformer = ASTTransformer()
     program = transformer.transform(tree)
 
+    # analiza semantyczna
     SemanticAnalyzer().analyze(program)
 
     generator = CodeGenerator()
