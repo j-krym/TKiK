@@ -178,35 +178,13 @@ class CToASTTransformer(Transformer):
             else_body = children[2]
         return If(condition=condition, then_body=then_body, else_body=else_body)
 
-    def else_part(self, children):
-        # The else_part rule has two alternatives:
-        # 1. "else" "if" "(" condition ")" statement else_part?
-        #    children = [condition, statement, else_part_or_None]
-        # 2. "else" statement  
-        #    children = [statement]
-        
-        if len(children) == 1:
-            # Pure 'else' case: children[0] is the statement
-            stmt = children[0]
-            return _flatten_statements(stmt if isinstance(stmt, list) else [stmt])
-        else:
-            # 'else if' case: children[0]=condition, children[1]=statement, children[2]=else_part or None
-            condition = children[0]
-            then_part = children[1]
-            then_body = _flatten_statements(then_part if isinstance(then_part, list) else [then_part])
-            else_body = children[2] if len(children) > 2 else None
-            # Return a list containing the elif If node
-            return [If(condition=condition, then_body=then_body, else_body=else_body)]
-
     def elif_clause(self, children):
-        # This method may no longer be needed, but keeping it for safety
         condition = children[0]
         stmt = children[1]
         body = _flatten_statements(stmt if isinstance(stmt, list) else [stmt])
         return ("elif", condition, body)
 
     def else_clause(self, children):
-        # This method may no longer be needed, but keeping it for safety
         stmt = children[0]
         return _flatten_statements(stmt if isinstance(stmt, list) else [stmt])
 
@@ -217,7 +195,6 @@ class CToASTTransformer(Transformer):
         return While(condition=condition, body=body)
 
     def for_stmt(self, children):
-        # With maybe_placeholders=True the optional clauses arrive as None values.
         if len(children) != 4:
             raise ValueError(f"unexpected for-statement children: {children!r}")
         init, condition, post, body = children

@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+from lark.exceptions import UnexpectedInput
 from lark import Lark
 
 from transformer import CToASTTransformer
@@ -161,5 +161,15 @@ class CParser:
         self._transformer = CToASTTransformer()
 
     def parse(self, source: str):
-        tree = self._lark.parse(source)
-        return self._transformer.transform(tree)
+        try:
+            tree = self._lark.parse(source)
+            return self._transformer.transform(tree)
+
+        except UnexpectedInput as e:
+            line = e.line
+            column = e.column
+
+            raise SyntaxError(
+                f"{e.__class__.__name__} at line {e.line}, column {e.column}\n"
+                f"{e.get_context(source)}"
+            ) from None

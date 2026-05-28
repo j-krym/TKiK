@@ -185,17 +185,60 @@ class CodeGenerator:
         return lines
 
     def _render_if(self, node: If, level: int) -> list[str]:
-        lines = [self._indent_line(f"if {self._render_expr(node.condition).text}:", level)]
-        then_lines = self._render_statements(node.then_body, level + 1)
-        if not then_lines:
-            then_lines = [self._indent_line("pass", level + 1)]
-        lines.extend(then_lines)
-        if node.else_body is not None:
-            lines.append(self._indent_line("else:", level))
-            else_lines = self._render_statements(node.else_body, level + 1)
-            if not else_lines:
-                else_lines = [self._indent_line("pass", level + 1)]
-            lines.extend(else_lines)
+        lines: list[str] = []
+
+        current = node
+        first = True
+
+        while True:
+
+            keyword = "if" if first else "elif"
+
+            lines.append(
+                self._indent_line(
+                    f"{keyword} {self._render_expr(current.condition).text}:",
+                    level,
+                )
+            )
+
+            body_lines = self._render_statements(
+                current.then_body,
+                level + 1,
+            )
+
+            if not body_lines:
+                body_lines = [self._indent_line("pass", level + 1)]
+
+            lines.extend(body_lines)
+
+            else_body = current.else_body
+
+            # elif chain
+            if (
+                else_body is not None
+                and len(else_body) == 1
+                and isinstance(else_body[0], If)
+            ):
+                current = else_body[0]
+                first = False
+                continue
+
+            # final else
+            if else_body is not None:
+                lines.append(self._indent_line("else:", level))
+
+                else_lines = self._render_statements(
+                    else_body,
+                    level + 1,
+                )
+
+                if not else_lines:
+                    else_lines = [self._indent_line("pass", level + 1)]
+
+                lines.extend(else_lines)
+
+            break
+
         return lines
 
     def _render_while(self, node: While, level: int) -> list[str]:
